@@ -14,6 +14,11 @@ with open('Game_Prompt.txt', 'r') as file:
     
 character_prompt = "The player encounters an NPC with the following description. Give her a name and play as her: \n" +generate_npc.generate_npc()
 
+#Debug text printing 
+print("The following is for debug purposes:")
+print(system_prompt)
+print(character_prompt)
+
 messages = [
   {
     'role': 'system',
@@ -31,6 +36,9 @@ messages = [
 
 while True:
   user_input = input('Chat with history: ')
+  exit_test = user_input.lower()
+  if exit_test == 'quit' or exit_test == 'q' or exit_test == 'exit':
+      break
   response = chat(
     'Mistral',
     messages=messages
