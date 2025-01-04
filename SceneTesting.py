@@ -16,13 +16,13 @@ def is_scene_over(messages):
       'Mistral',
       messages=messages
       + [
-        {'role': 'system', 'content': "Respond with a single word, yes/no. Is the scene over?"},
+        {'role': 'user', 'content': "Do not explain. Respond with only 'Yes' or 'No': Is the scene over? If your answer is longer than one word, it is incorrect."},
       ],
     )
     answer = response.message.content.lower()
     #debug print
     print("Is scene over?: " + answer)
-    if answer == "yes":
+    if "yes" in answer:
         return True
     else:
         return False
@@ -68,9 +68,11 @@ response: ChatResponse = chat(model='Mistral', messages=[
   },
 ])
 
+print(response.message.content)
+
 messages += [
   {'role': 'system', 'content': 'Start the game by describing the setting of the first encounter only.'},
-  {'role': 'game master', 'content': response.message.content},
+  {'role': 'assistant', 'content': response.message.content},
 ]
 
 while True:
@@ -89,7 +91,7 @@ while True:
   # Add the response to the messages to maintain the history
   messages += [
     {'role': 'user', 'content': user_input},
-    {'role': 'game master', 'content': response.message.content},
+    {'role': 'assistant', 'content': response.message.content},
   ]
   print(response.message.content + '\n')
   if is_scene_over(messages):

@@ -14,12 +14,12 @@ def check_penis_size(messages, fileName='player_profile.json'):
       'Mistral',
       messages=messages
       + [
-        {'role': 'system', 'content': "In inches, return the value for x: playerCockSize = x"},
+        {'role': 'system', 'content': "Do not explain. If your response includes words it is wrong. In inches, return the value for x: playerCockSize = x"},
       ],
     )
     answer = response.message.content.split("=")
     try:
-        new_size = int(answer[1])
+        new_size = answer
         profile = pd.read_json(fileName)
         profile["Player"]["Cock size"] = new_size
         pd.to_json(fileName)
