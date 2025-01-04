@@ -6,8 +6,26 @@ Created on Fri Jan  3 16:20:08 2025
 """
 
 import generate_npc
+import load_player
+import update_player
 from ollama import chat
 from ollama import ChatResponse
+
+def is_scene_over(messages):
+    response = chat(
+      'Mistral',
+      messages=messages
+      + [
+        {'role': 'system', 'content': "Respond with a single word, yes/no. Is the scene over?"},
+      ],
+    )
+    answer = response.message.content.lower()
+    #debug print
+    print("Is scene over?: " + answer)
+    if answer == "yes":
+        return True
+    else:
+        return False
 
 with open('Game_Prompt.txt', 'r') as file:
     system_prompt = file.read()
@@ -53,3 +71,7 @@ while True:
     {'role': 'assistant', 'content': response.message.content},
   ]
   print(response.message.content + '\n')
+  if is_scene_over(messages):
+      break
+
+update_player.check_penis_size(messages)
