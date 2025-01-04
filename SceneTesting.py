@@ -30,30 +30,51 @@ def is_scene_over(messages):
 with open('Game_Prompt.txt', 'r') as file:
     system_prompt = file.read()
     
+player = load_player.player_description()
 character_prompt = "The player encounters an NPC with the following description. Give her a name and play as her: \n" +generate_npc.generate_npc()
 
 #Debug text printing 
-print("The following is for debug purposes:")
+print("The following is for debug purposes:\n")
 print(system_prompt)
+print()
+print(player)
+print()
 print(character_prompt)
+print()
 
 messages = [
   {
     'role': 'system',
-    'content': system_prompt,
+    'content': 'START SYSTEM PROMPT:\n'+system_prompt+'END SYSTEM PROMPT\n',
   },
   {
     'role': 'system',
-    'content': character_prompt,
+    'content': 'START PLAYER DESCRIPTION:\n'+player+'END PLAYER DESCRIPTION\n',
   },
   {
     'role': 'system',
-    'content': 'The user is a boy with white skin and an average cock. The user is playing the role of the player.',
+    'content': 'START NPC DESCRIPTION:\n'+character_prompt+'END NPC DESCRIPTION\n',
+  },
+  {
+    'role': 'system',
+    'content': 'The user is playing the role of the player.',
   },
 ]
 
+response: ChatResponse = chat(model='Mistral', messages=[
+  {
+    'role': 'system',
+    'content': 'Start the game by describing the setting of the first encounter only.',
+  },
+])
+
+messages += [
+  {'role': 'system', 'content': 'Start the game by describing the setting of the first encounter only.'},
+  {'role': 'game master', 'content': response.message.content},
+]
+
 while True:
-  user_input = input('Chat with history: ')
+  user_input = input('Input your response: ')
   exit_test = user_input.lower()
   if exit_test == 'quit' or exit_test == 'q' or exit_test == 'exit':
       break
@@ -68,7 +89,7 @@ while True:
   # Add the response to the messages to maintain the history
   messages += [
     {'role': 'user', 'content': user_input},
-    {'role': 'assistant', 'content': response.message.content},
+    {'role': 'game master', 'content': response.message.content},
   ]
   print(response.message.content + '\n')
   if is_scene_over(messages):
