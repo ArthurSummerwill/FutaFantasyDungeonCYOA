@@ -21,7 +21,7 @@ def is_scene_over(messages):
     )
     answer = response.message.content.lower()
     #debug print
-    print("Is scene over?: " + answer)
+    print("IS SCENE OVER?: " + answer + "\n END SCENE OVER QUESTION\n")
     if "yes" in answer:
         return True
     else:
@@ -61,17 +61,37 @@ messages = [
   },
 ]
 
+history = [
+  {
+    'role': 'system',
+    'content': 'START PLAYER DESCRIPTION:\n'+player+'END PLAYER DESCRIPTION\n',
+  },
+  {
+    'role': 'system',
+    'content': 'START NPC DESCRIPTION:\n'+character_prompt+'END NPC DESCRIPTION\n',
+  },
+  {
+    'role': 'system',
+    'content': 'The user is playing the role of the player.',
+  },
+]
+
 response: ChatResponse = chat(model='Mistral', messages=[
   {
     'role': 'system',
-    'content': 'Start the game by describing the setting of the first encounter only.',
+    'content': 'The player has just entered a room in the dungeon. Describe the room and the woman the player finds there.',
   },
 ])
 
 print(response.message.content)
 
 messages += [
-  {'role': 'system', 'content': 'Start the game by describing the setting of the first encounter only.'},
+  {'role': 'system', 'content': 'The player has just entered a room in the dungeon. Describe the room and the woman the player finds there.'},
+  {'role': 'assistant', 'content': response.message.content},
+]
+
+history += [
+  {'role': 'system', 'content': 'The player has just entered a room in the dungeon. Describe the room and the woman the player finds there.'},
   {'role': 'assistant', 'content': response.message.content},
 ]
 
@@ -93,8 +113,12 @@ while True:
     {'role': 'user', 'content': user_input},
     {'role': 'assistant', 'content': response.message.content},
   ]
+  history += [
+    {'role': 'user', 'content': user_input},
+    {'role': 'assistant', 'content': response.message.content},
+  ]
   print(response.message.content + '\n')
   if is_scene_over(messages):
       break
 
-update_player.check_penis_size(messages)
+update_player.check_penis_size(history)
