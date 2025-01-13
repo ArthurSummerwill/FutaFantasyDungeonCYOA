@@ -16,7 +16,7 @@ def is_scene_over(messages):
       'Mistral',
       messages=messages
       + [
-        {'role': 'user', 'content': "Do not explain. Respond with only 'Yes' or 'No': Is the scene over? If your answer is longer than one word, it is incorrect."},
+        {'role': 'user', 'content': "Do not explain. Respond with only 'Yes' or 'No': Is the scene over (e.g., is the woman done fucking the player)? If your answer is longer than one word, it is incorrect."},
       ],
     )
     answer = response.message.content.lower()
