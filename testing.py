@@ -17,6 +17,18 @@ print(random.choice(race_list))
 print(generate_npc.generate_npc())
 print(load_player.player_description())
 
+fileName='player_profile.json'
+def read_profile(fileName):
+    profile = pd.read_json(fileName)
+    return profile
+profile = read_profile(fileName)
+print(profile["Player"]["Cock size"])
+profile2 = dict(profile)
+profile2['Player']["Cock size"] = "7"
+print(profile2['Player']["Cock size"])
+profile2 = pd.DataFrame(profile2)
+profile2.to_json('player_profile_test.json')
+
 '''while True:
     response = input("Enter text: ")
     response = response.lower()

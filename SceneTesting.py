@@ -79,7 +79,7 @@ history = [
 response: ChatResponse = chat(model='Mistral', messages=[
   {
     'role': 'system',
-    'content': 'The player has just entered a room in the dungeon. Describe the room and the woman the player finds there.',
+    'content': 'The player has just entered a room in the dungeon. Describe the room and the woman the player finds there. Be sure to describe the race of the monstergirl.',
   },
 ])
 
@@ -119,6 +119,13 @@ while True:
   ]
   print(response.message.content + '\n')
   if is_scene_over(messages):
+      response = chat(
+        'Mistral',
+        messages=messages
+        + [
+          {'role': 'system', 'content': "The player will now leave this room of the dungeon. Briefly describe the scene of the player leaving."},
+        ],
+      )
       break
 
 update_player.check_penis_size(history)
